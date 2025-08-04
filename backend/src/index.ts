@@ -1,9 +1,8 @@
 import express from 'express'
-import cors from 'cors'
-import patientRegsitration from '../routes/patientRegistration.routes';
+import patientRegsitration from '../routes/patientRegistration.routes.ts';
 //import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
-import donorRegistration from '../routes/donorRegistration.routes';
+import donorRegistration from '../routes/donorRegistration.routes.ts';
 
 const app=express();
 // app.use(cors({

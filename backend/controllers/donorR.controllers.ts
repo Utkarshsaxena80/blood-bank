@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { prisma } from "../utils/prisma.utils";
+import { prisma } from "../utils/prisma.utils.ts";
 import bcrypt from "bcrypt";
 import { z } from "zod";
-import { generateToken } from "../utils/jwt.utils";
+import { generateToken } from "../utils/jwt.utils.ts";
 
 const donorSchema = z.object({
   name: z.string().min(2, "Name is too short"),

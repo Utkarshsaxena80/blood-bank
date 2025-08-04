@@ -1,5 +1,5 @@
 import express from 'express'
-import { donorR } from '../controllers/donorR.controllers'
+import { donorR } from '../controllers/donorR.controllers.ts'
 
 const donorRegistration:express.Router=express.Router()
 
