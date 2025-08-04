@@ -2,8 +2,13 @@ import express from "express";
 import cors from "cors";
 import patientRegistration from "../routes/patientRegistration.routes.ts";
 //import morgan from 'morgan'
+
+import cookieParser from 'cookie-parser'
+import donorRegistration from '../routes/donorRegistration.routes.ts';
+import bloodBank from '../routes/bloodBank.routes.ts';
 import cookieParser from "cookie-parser";
 import donorRegistration from "../routes/donorRegistration.routes.ts";
+
 
 const app = express();
 // app.use(express.json());
@@ -19,8 +24,10 @@ app.use(cookieParser());
 
 const PORT: number = 3000;
 
-app.use("/api/patient", patientRegistration); // Use the router
-app.use("/api/donor", donorRegistration); // Use the router
+
+app.use('/',patientRegsitration)
+app.use('/',donorRegistration)
+app.use('/',bloodBank)
 
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
