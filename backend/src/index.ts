@@ -2,14 +2,9 @@ import express from "express";
 import cors from "cors";
 import patientRegistration from "../routes/patientRegistration.routes.ts";
 //import morgan from 'morgan'
-
 import cookieParser from 'cookie-parser'
 import donorRegistration from '../routes/donorRegistration.routes.ts';
 import bloodBank from '../routes/bloodBank.routes.ts';
-import cookieParser from "cookie-parser";
-import donorRegistration from "../routes/donorRegistration.routes.ts";
-
-
 const app = express();
 // app.use(express.json());
 
