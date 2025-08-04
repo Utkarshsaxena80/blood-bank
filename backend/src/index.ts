@@ -1,25 +1,27 @@
-import express from 'express'
-import patientRegsitration from '../routes/patientRegistration.routes.ts';
+import express from "express";
+import cors from "cors";
+import patientRegistration from "../routes/patientRegistration.routes.ts";
 //import morgan from 'morgan'
-import cookieParser from 'cookie-parser'
-import donorRegistration from '../routes/donorRegistration.routes.ts';
+import cookieParser from "cookie-parser";
+import donorRegistration from "../routes/donorRegistration.routes.ts";
 
-const app=express();
-app.use(express.json());
+const app = express();
+// app.use(express.json());
 
 // app.use(cors({
 //     origin:"localhost:5000",
 //     methods:['GET','POST'],
 //     credentials:true
 // }))
-//pp.use(morgan('dev'))
-app.use(cookieParser())
+// app.use(morgan('dev'))
+app.use(express.json()); // Add this to parse JSON request bodies
+app.use(cookieParser());
 
-const PORT:number=3000;
+const PORT: number = 3000;
 
-app.use('/',patientRegsitration)
-app.use('/',donorRegistration)
+app.use("/api/patient", patientRegistration); // Use the router
+app.use("/api/donor", donorRegistration); // Use the router
 
-app.listen(PORT,()=>{
-    console.log(`listening on port ${PORT}`)
-})
+app.listen(PORT, () => {
+  console.log(`listening on port ${PORT}`);
+});
