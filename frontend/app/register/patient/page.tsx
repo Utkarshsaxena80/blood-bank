@@ -1,5 +1,7 @@
 "use client"
 
+import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useState } from "react"
 import Link from "next/link"
 import { User } from "lucide-react"
@@ -30,6 +32,10 @@ export default function PatientRegisterPage() {
     age: "",
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const router = useRouter();
 
   const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
 
@@ -48,8 +54,24 @@ export default function PatientRegisterPage() {
       setErrors(fieldErrors)
       return
     }
-    setErrors({})
-    alert("Patient registration successful (mock)!")
+    setErrors({});
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    axios.post("http://localhost:3001/register-patient", {
+      ...formData,
+      age: Number(formData.age),
+      status: true,
+    })
+      .then(res => {
+        setSuccess("Registration successful!");
+        setTimeout(() => router.push("/login/patient"), 1500);
+      })
+      .catch(err => {
+        setError(err.response?.data?.message || "Registration failed");
+      })
+      .finally(() => setLoading(false));
   }
 
   return (
@@ -59,32 +81,113 @@ export default function PatientRegisterPage() {
           <User className="h-7 w-7 text-red-600" />
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Patient Registration</h2>
         </div>
+        {/* Backend error/success messages */}
+        {error && <div className="text-red-500 mb-2">{error}</div>}
+        {success && <div className="text-green-600 mb-2">{success}</div>}
         <form className="space-y-4" onSubmit={handleSubmit} autoComplete="off">
-          <input className="block w-full px-4 py-2 text-base rounded-lg border border-input bg-background text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-gray-500" placeholder="Full Name" name="name" value={formData.name} onChange={handleChange} />
-          {errors.name && <p className="text-red-600 text-xs mt-1">{errors.name}</p>}
-          <input className="block w-full px-4 py-2 text-base rounded-lg border border-input bg-background text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-gray-500" placeholder="Phone" name="phone" value={formData.phone} onChange={handleChange} />
-          {errors.phone && <p className="text-red-600 text-xs mt-1">{errors.phone}</p>}
-          <input className="block w-full px-4 py-2 text-base rounded-lg border border-input bg-background text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-gray-500" placeholder="Email" name="email" value={formData.email} onChange={handleChange} type="email" />
-          {errors.email && <p className="text-red-600 text-xs mt-1">{errors.email}</p>}
-          <input className="block w-full px-4 py-2 text-base rounded-lg border border-input bg-background text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-gray-500" placeholder="Password" name="password" value={formData.password} onChange={handleChange} type="password" />
-          {errors.password && <p className="text-red-600 text-xs mt-1">{errors.password}</p>}
-          <input className="block w-full px-4 py-2 text-base rounded-lg border border-input bg-background text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-gray-500" placeholder="Blood Bank" name="bloodBank" value={formData.bloodBank} onChange={handleChange} />
-          {errors.bloodBank && <p className="text-red-600 text-xs mt-1">{errors.bloodBank}</p>}
-          <input className="block w-full px-4 py-2 text-base rounded-lg border border-input bg-background text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-gray-500" placeholder="City" name="city" value={formData.city} onChange={handleChange} />
-          {errors.city && <p className="text-red-600 text-xs mt-1">{errors.city}</p>}
-          <input className="block w-full px-4 py-2 text-base rounded-lg border border-input bg-background text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-gray-500" placeholder="State" name="state" value={formData.state} onChange={handleChange} />
-          {errors.state && <p className="text-red-600 text-xs mt-1">{errors.state}</p>}
-          <select className="block w-full px-4 py-2 text-base rounded-lg border border-input bg-background text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-gray-500" name="bloodType" value={formData.bloodType} onChange={handleChange}>
-            <option value="">Select Blood Type</option>
-            {bloodTypes.map(bt => (
-              <option key={bt} value={bt}>{bt}</option>
-            ))}
-          </select>
-          {errors.bloodType && <p className="text-red-600 text-xs mt-1">{errors.bloodType}</p>}
-          <input className="block w-full px-4 py-2 text-base rounded-lg border border-input bg-background text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition placeholder:text-gray-400 dark:placeholder:text-gray-500" placeholder="Age" name="age" value={formData.age} onChange={handleChange} type="number" />
-          {errors.age && <p className="text-red-600 text-xs mt-1">{errors.age}</p>}
-          <button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
-            Register
+          <div>
+            <input
+              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              placeholder="Full Name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+            {errors.name && <p className="text-red-600 text-xs mt-1">{errors.name}</p>}
+          </div>
+          <div>
+            <input
+              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+              placeholder="Phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+            />
+            {errors.phone && <p className="text-red-600 text-xs mt-1">{errors.phone}</p>}
+          </div>
+          <div>
+            <input
+              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+              placeholder="Email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              type="email"
+            />
+            {errors.email && <p className="text-red-600 text-xs mt-1">{errors.email}</p>}
+          </div>
+          <div>
+            <input
+              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+              placeholder="Password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              type="password"
+            />
+            {errors.password && <p className="text-red-600 text-xs mt-1">{errors.password}</p>}
+          </div>
+          <div>
+            <input
+              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+              placeholder="Blood Bank"
+              name="bloodBank"
+              value={formData.bloodBank}
+              onChange={handleChange}
+            />
+            {errors.bloodBank && <p className="text-red-600 text-xs mt-1">{errors.bloodBank}</p>}
+          </div>
+          <div>
+            <input
+              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+              placeholder="City"
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+            />
+            {errors.city && <p className="text-red-600 text-xs mt-1">{errors.city}</p>}
+          </div>
+          <div>
+            <input
+              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+              placeholder="State"
+              name="state"
+              value={formData.state}
+              onChange={handleChange}
+            />
+            {errors.state && <p className="text-red-600 text-xs mt-1">{errors.state}</p>}
+          </div>
+          <div>
+            <select
+              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+              name="bloodType"
+              value={formData.bloodType}
+              onChange={handleChange}
+            >
+              <option value="">Select Blood Type</option>
+              {bloodTypes.map(bt => (
+                <option key={bt} value={bt}>{bt}</option>
+              ))}
+            </select>
+            {errors.bloodType && <p className="text-red-600 text-xs mt-1">{errors.bloodType}</p>}
+          </div>
+          <div>
+            <input
+              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+              placeholder="Age"
+              name="age"
+              value={formData.age}
+              onChange={handleChange}
+              type="number"
+            />
+            {errors.age && <p className="text-red-600 text-xs mt-1">{errors.age}</p>}
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+            disabled={loading}
+          >
+            {loading ? "Registering..." : "Register"}
           </button>
         </form>
         <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">

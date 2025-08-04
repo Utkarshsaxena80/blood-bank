@@ -1,6 +1,8 @@
 // app/register/donor/page.tsx
 "use client"
 
+import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useState } from "react"
 import Link from "next/link"
 import { Heart } from "lucide-react"
@@ -31,6 +33,10 @@ export default function DonorRegisterPage() {
     age: "",
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const router = useRouter();
 
   const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
 
@@ -49,9 +55,24 @@ export default function DonorRegisterPage() {
       setErrors(fieldErrors)
       return
     }
-    setErrors({})
-    // Submit logic here (API call)
-    alert("Registration successful (mock)!")
+    setErrors({});
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    axios.post("http://localhost:3001/donor-registration", {
+      ...formData,
+      age: Number(formData.age),
+      status: true,
+    })
+      .then(res => {
+        setSuccess("Registration successful!");
+        setTimeout(() => router.push("/login/donor"), 1500);
+      })
+      .catch(err => {
+        setError(err.response?.data?.message || "Registration failed");
+      })
+      .finally(() => setLoading(false));
   }
 
   return (
@@ -61,6 +82,9 @@ export default function DonorRegisterPage() {
           <Heart className="h-7 w-7 text-red-600" fill="currentColor" />
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Donor Registration</h2>
         </div>
+        {/* Backend error/success messages */}
+        {error && <div className="text-red-500 mb-2">{error}</div>}
+        {success && <div className="text-green-600 mb-2">{success}</div>}
         <form className="space-y-4" onSubmit={handleSubmit} autoComplete="off">
           <div>
             <input
@@ -162,8 +186,9 @@ export default function DonorRegisterPage() {
           <button
             type="submit"
             className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+            disabled={loading}
           >
-            Register
+            {loading ? "Registering..." : "Register"}
           </button>
         </form>
         <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
