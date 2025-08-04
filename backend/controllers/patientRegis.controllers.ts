@@ -2,12 +2,7 @@ import { Request, Response } from "express";
 import { prisma } from "../utils/prisma.utils";
 import bcrypt from "bcrypt";
 import { z } from "zod";
-
-/**
- *
- * @param req the data of patient
- * @param res will give the response of operations
- */
+import { generateToken } from "../utils/jwt.utils";
 
 const patinetSchema = z.object({
   name: z.string().min(2, "Name is too short"),
@@ -21,10 +16,14 @@ const patinetSchema = z.object({
   age: z.number().positive().int(),
 });
 
+/**
+ *
+ * @param req the data of patient
+ * @param res will give the response of operations
+ */
+
 const patientR = async (req: Request, res: Response): Promise<void> => {
   const patientData = patinetSchema.parse(req.body);
-  //fetch data from datbases of patients and email as thier -->will do it later (using prisma )
-
   try {
     const userExists = await prisma.patients.findFirst({
       where: { email: patientData.email },
@@ -35,7 +34,8 @@ const patientR = async (req: Request, res: Response): Promise<void> => {
       });
     } else {
       //heash password
-      const SALT_ROUNDS: number = 10;
+      const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS || "10");
+
       const hashedPassword = await bcrypt.hash(
         patientData.password,
         SALT_ROUNDS
@@ -59,6 +59,16 @@ const patientR = async (req: Request, res: Response): Promise<void> => {
           email: true,
           createdAt: true,
         },
+      });
+
+      //creating jwt token
+      const token = generateToken(pushUser.id);
+
+      res.cookie("authToken", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 1000,
       });
       res.status(200).json({
         message: "user added",
