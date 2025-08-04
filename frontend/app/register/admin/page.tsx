@@ -59,7 +59,7 @@ export default function AdminRegisterPage() {
 
     axios.post("http://localhost:3001/register-bloodBank", {
       ...formData,
-      totalBloodBags: 0, // Backend expects this, but will override to 0 anyway
+      totalBloodBags: 0, // Backend expects this, but will override to 0 
     })
       .then(res => {
         setSuccess("Registration successful!");
