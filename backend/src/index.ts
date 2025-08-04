@@ -20,7 +20,7 @@ app.use(cookieParser());
 const PORT: number = 3000;
 
 
-app.use('/',patientRegsitration)
+app.use('/',patientRegistration)
 app.use('/',donorRegistration)
 app.use('/',bloodBank)
 
