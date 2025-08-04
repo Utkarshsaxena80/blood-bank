@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
-import { prisma } from "../utils/prisma.utils";
+import { prisma } from "../utils/prisma.utils.ts";
 import bcrypt from "bcrypt";
 import { z } from "zod";
-import { generateToken } from "../utils/jwt.utils";
+import { generateToken } from "../utils/jwt.utils.ts";
 
 const patientSchema = z.object({
   name: z.string().min(2, "Name is too short"),
   phone: z.string().min(10, "Invalid phone number"),
-  email: z.string().email("Invalid email format"),
+  email: z.email(),
   password: z.string().min(8, "Password must be at least 8 characters"),
   bloodBank: z.string().min(1),
   city: z.string().min(1),

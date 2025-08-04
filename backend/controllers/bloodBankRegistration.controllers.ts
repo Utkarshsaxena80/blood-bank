@@ -4,37 +4,44 @@ import bcrypt from "bcrypt";
 import { z } from "zod";
 import { generateToken } from "../utils/jwt.utils.ts";
 
-const donorSchema = z.object({
+const bloodBankSchema = z.object({
   name: z.string().min(2, "Name is too short"),
-  phone: z.string().min(10, "Invalid phone number"),
+  adminName: z.string().min(2, "Admin name is too short"),
+  licenseNumber: z.string().min(2, "License number is too short"),
   email: z.string().email("Invalid email format"),
   password: z.string().min(8, "Password must be at least 8 characters"),
-  bloodBank: z.string().min(1),
-  city: z.string().min(1),
-  state: z.string().min(1),
-  bloodType: z.string(),
-  age: z.number().positive().int(), 
+  phone: z
+    .string()
+    .min(10, "Phone number must be at least 10 digits")
+    .max(15, "Phone number is too long"),
+  totalBloodBags: z
+    .number()
+    .int("Must be a whole number")
+    .nonnegative("Must be 0 or greater"),
+  address: z.string().min(5, "Address is too short"),
+  city: z.string().min(1, "City is required"),
+  state: z.string().min(1, "State is required"),
 });
 
 /**
  *
- * @param req the data of donors
+ * @param req the data of patient
  * @param res will give the response of operations
  */
 
-const donorR = async (req: Request, res: Response): Promise<void> => {
-  const patientData = donorSchema.parse(req.body);
+const bloodR = async (req: Request, res: Response): Promise<void> => {
+  console.log("hi");
+  const bloodBankData = bloodBankSchema.parse(req.body);
   try {
-    const userExists = await prisma.donors.findFirst({
+    const userExists = await prisma.bloodBanks.findFirst({
       where: {
-        OR: [{ email: patientData.email }, { phone: patientData.phone }],
+        OR: [{ email: bloodBankData.email }, { phone: bloodBankData.phone }],
       },
     });
     if (userExists) {
-
       res.status(409).json({
         message:
-          userExists.email === patientData.email
+          userExists.email === bloodBankData.email
             ? "User already exists with this email"
             : "User already exists with this phone number",
       });
@@ -43,21 +50,22 @@ const donorR = async (req: Request, res: Response): Promise<void> => {
       const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS || "10");
 
       const hashedPassword = await bcrypt.hash(
-        patientData.password,
+        bloodBankData.password,
         SALT_ROUNDS
       );
 
-      const pushUser = await prisma.donors.create({
+      const pushBloodBank = await prisma.bloodBanks.create({
         data: {
-          name: patientData.name,
-          email: patientData.email,
+          name: bloodBankData.name,
+          adminName: bloodBankData.adminName,
+          licenseNumber: bloodBankData.licenseNumber,
+          email: bloodBankData.email,
           password: hashedPassword,
-          phone: patientData.phone,
-          BloodBank: patientData.bloodBank,
-          BloodType: patientData.bloodType,
-          city: patientData.city,
-          state: patientData.state,
-          age: patientData.age,
+          phone: bloodBankData.phone,
+          totalBloodBags: 0,
+          address: bloodBankData.address,
+          city: bloodBankData.city,
+          state: bloodBankData.state,
         },
         select: {
           id: true,
@@ -68,7 +76,7 @@ const donorR = async (req: Request, res: Response): Promise<void> => {
       });
 
       //creating jwt token
-      const token = generateToken(pushUser.id);
+      const token = generateToken(pushBloodBank.id);
 
       res.cookie("authToken", token, {
         httpOnly: true,
@@ -78,8 +86,13 @@ const donorR = async (req: Request, res: Response): Promise<void> => {
       });
 
       res.status(200).json({
-        message: "user added",
-        pushUser,
+        message: "User added successfully",
+        data: {
+          id: pushBloodBank.id,
+          name: pushBloodBank.name,
+          email: pushBloodBank.email,
+          createdAt: pushBloodBank.createdAt,
+        },
       });
     }
   } catch (err) {
@@ -103,4 +116,4 @@ const donorR = async (req: Request, res: Response): Promise<void> => {
     });
   }
 };
-export { donorR };
+export { bloodR };

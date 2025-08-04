@@ -39,5 +39,4 @@ city String
 state String
 age Int
 createdAt DateTime @default(now())
-
 }
