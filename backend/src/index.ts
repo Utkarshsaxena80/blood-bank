@@ -1,9 +1,10 @@
 import express from 'express'
 import patientRegsitration from '../routes/patientRegistration.routes.ts';
-//import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
 import donorRegistration from '../routes/donorRegistration.routes.ts';
 import bloodBank from '../routes/bloodBank.routes.ts';
+import patientDetail from '../routes/patientDetails.routes.ts';
+import PorDBycity from '../routes/getPatorDonByCity.routes.ts';
 
 const app=express();
 app.use(express.json());
@@ -21,6 +22,8 @@ const PORT:number=3000;
 app.use('/',patientRegsitration)
 app.use('/',donorRegistration)
 app.use('/',bloodBank)
+app.use('/',patientDetail)
+app.use('/',PorDBycity)
 
 app.listen(PORT,()=>{
     console.log(`listening on port ${PORT}`)
