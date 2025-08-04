@@ -99,7 +99,7 @@ The server will start on `http://localhost:3000`
   ```
 
 ### Blood Bank Registration
-- **POST** `/blood-bank-registration`
+- **POST** `/register-bloodBank`
 - **Body**:
   ```json
   {
