@@ -22,7 +22,7 @@ const patientSchema = z.object({
  * @param res will give the response of operations
  */
 
-const patientR = async (req: Request, res: Response): Promise<void> => {
+const donorR = async (req: Request, res: Response): Promise<void> => {
   const patientData = patientSchema.parse(req.body);
   try {
     const userExists = await prisma.patients.findFirst({
@@ -101,4 +101,4 @@ const patientR = async (req: Request, res: Response): Promise<void> => {
     });
   }
 };
-export { patientR };
+export { donorR };

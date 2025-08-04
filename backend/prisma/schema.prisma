@@ -26,3 +26,18 @@ state String
 age Int
 createdAt DateTime @default(now())
 }
+
+model donors{
+id String @id @default(uuid())
+name String
+email String
+password String
+phone String
+BloodBank String
+BloodType String
+city String 
+state String
+age Int
+createdAt DateTime @default(now())
+
+}
