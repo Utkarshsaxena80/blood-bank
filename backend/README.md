@@ -65,7 +65,7 @@ The server will start on `http://localhost:3000`
 ## 📡 API Endpoints
 
 ### Patient Registration
-- **POST** `/api/patient/register-patient`
+- **POST** `/register-patient`
 - **Body**:
   ```json
   {
@@ -82,7 +82,7 @@ The server will start on `http://localhost:3000`
   ```
 
 ### Donor Registration
-- **POST** `/api/donor/donor-registration`
+- **POST** `/donor-registration`
 - **Body**:
   ```json
   {
@@ -95,6 +95,24 @@ The server will start on `http://localhost:3000`
     "city": "New York",
     "state": "NY",
     "age": 30
+  }
+  ```
+
+### Blood Bank Registration
+- **POST** `/blood-bank-registration`
+- **Body**:
+  ```json
+  {
+    "name": "City Blood Bank",
+    "adminName": "Admin Name",
+    "email": "admin@bloodbank.com",
+    "password": "password123",
+    "phone": "1234567890",
+    "totalBloodBags": 100,
+    "address": "123 Main Street",
+    "city": "New York",
+    "state": "NY",
+    "licenseNumber": "BB123456"
   }
   ```
 
