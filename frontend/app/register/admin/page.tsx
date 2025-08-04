@@ -56,7 +56,7 @@ export default function AdminRegisterPage() {
     setLoading(true);
     setError(null);
     setSuccess(null);
-
+// connection set up
     axios.post("http://localhost:3001/register-bloodBank", {
       ...formData,
       totalBloodBags: 0, // Backend expects this, but will override to 0 
