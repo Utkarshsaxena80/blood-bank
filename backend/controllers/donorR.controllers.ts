@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import { z } from "zod";
 import { generateToken } from "../utils/jwt.utils";
 
-const patientSchema = z.object({
+const donorSchema = z.object({
   name: z.string().min(2, "Name is too short"),
   phone: z.string().min(10, "Invalid phone number"),
   email: z.string().email("Invalid email format"),
@@ -23,9 +23,9 @@ const patientSchema = z.object({
  */
 
 const donorR = async (req: Request, res: Response): Promise<void> => {
-  const patientData = patientSchema.parse(req.body);
+  const patientData = donorSchema.parse(req.body);
   try {
-    const userExists = await prisma.patients.findFirst({
+    const userExists = await prisma.donors.findFirst({
       where: {
         OR: [{ email: patientData.email }, { phone: patientData.phone }],
       },
@@ -46,7 +46,7 @@ const donorR = async (req: Request, res: Response): Promise<void> => {
         SALT_ROUNDS
       );
 
-      const pushUser = await prisma.patients.create({
+      const pushUser = await prisma.donors.create({
         data: {
           name: patientData.name,
           email: patientData.email,
@@ -75,6 +75,7 @@ const donorR = async (req: Request, res: Response): Promise<void> => {
         sameSite: "strict",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
+
       res.status(200).json({
         message: "user added",
         pushUser,
@@ -94,7 +95,7 @@ const donorR = async (req: Request, res: Response): Promise<void> => {
       });
       return;
     }
-    console.error("patient registration error", err);
+    console.error("donor registration error", err);
 
     res.status(500).json({
       message: "Cannot register at this moment",

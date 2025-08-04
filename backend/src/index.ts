@@ -18,7 +18,7 @@ const PORT:number=3000;
 
 app.post('/patient-registration',patientRegsitration)
 
-app.post('donor-registration',donorRegistration)
+app.post('/donor-registration',donorRegistration)
 
 app.listen(PORT,()=>{
     console.log(`listening on port ${PORT}`)
