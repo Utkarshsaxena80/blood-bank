@@ -23,6 +23,7 @@ const donorSchema = z.object({
  */
 
 const bloodR = async (req: Request, res: Response): Promise<void> => {
+    console.log("hi");
   const patientData = donorSchema.parse(req.body);
   try {
     const userExists = await prisma.donors.findFirst({

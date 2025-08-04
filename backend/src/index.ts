@@ -5,6 +5,8 @@ import cookieParser from 'cookie-parser'
 import donorRegistration from '../routes/donorRegistration.routes.ts';
 
 const app=express();
+app.use(express.json());
+
 // app.use(cors({
 //     origin:"localhost:5000",
 //     methods:['GET','POST'],
@@ -15,9 +17,8 @@ app.use(cookieParser())
 
 const PORT:number=3000;
 
-app.post('/patient-registration',patientRegsitration)
-
-app.post('/donor-registration',donorRegistration)
+app.use('/',patientRegsitration)
+app.use('/',donorRegistration)
 
 app.listen(PORT,()=>{
     console.log(`listening on port ${PORT}`)

@@ -18,7 +18,7 @@ const donorSchema = z.object({
 
 /**
  *
- * @param req the data of patient
+ * @param req the data of donors
  * @param res will give the response of operations
  */
 
@@ -31,6 +31,7 @@ const donorR = async (req: Request, res: Response): Promise<void> => {
       },
     });
     if (userExists) {
+
       res.status(409).json({
         message:
           userExists.email === patientData.email
