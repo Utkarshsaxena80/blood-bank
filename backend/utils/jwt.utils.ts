@@ -1,8 +1,9 @@
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_KEY;
-if (!JWT_SECRET) {
-  throw new Error("JWT_KEY environment variable is not defined");
+const JWT_SECRET = process.env.JWT_KEY || "fallback-secret-key-for-development";
+
+if (!process.env.JWT_KEY && process.env.NODE_ENV === "production") {
+  throw new Error("JWT_KEY environment variable is required in production");
 }
 
 export const generateToken = (userId: string) => {
