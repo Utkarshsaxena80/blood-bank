@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 import { prisma } from "../utils/prisma.utils.ts";
 import { z } from "zod";
-import { tr } from "zod/locales";
 
 const requiredField = z.object({
-  field: z.union([z.literal(1), z.literal(2)]),
+  field: z.enum(['1', '2']).transform((val) => parseInt(val) as 1 | 2),
   city: z.string().min(1, "City is required").max(100, "City name too long").trim(),
 });
 
@@ -16,6 +15,7 @@ interface UserResponse {
   BloodBank: string;
   BloodType: string;
   city?: string;
+  status?: boolean;
 }
 
 interface ApiResponse<T = any> {
@@ -27,29 +27,29 @@ interface ApiResponse<T = any> {
 
 const bycity = async (req: Request, res: Response): Promise<void> => {
   try {
-    const fields = requiredField.parse(req.body);
+    const fields = requiredField.parse(req.query);
     const normalizedCity = fields.city.toLowerCase().trim();
-    
+
     if (fields.field === 1) {
+      // Patient search
       const patients = await prisma.patients.findMany({
         where: {
           city: {
             equals: normalizedCity,
             mode: "insensitive",
           },
-         status:true,
+          status: true,
         },
         select: {
-          id: true, // Include ID for frontend operations
+          id: true,
           name: true,
           email: true,
           phone: true,
           BloodBank: true,
           BloodType: true,
           city: true,
-          status:true,
+          status: true,
         },
-        
         take: 50,
         orderBy: {
           createdAt: 'desc'
@@ -63,22 +63,25 @@ const bycity = async (req: Request, res: Response): Promise<void> => {
           data: patients
         };
         res.status(200).json(response);
+        return;
       } else {
         const response: ApiResponse = {
           success: false,
           message: `No patients found in ${fields.city}`,
         };
         res.status(404).json(response);
+        return;
       }
-      
+
     } else if (fields.field === 2) {
+      // Donor search
       const donors = await prisma.donors.findMany({
         where: {
           city: {
             equals: normalizedCity,
             mode: "insensitive",
           },
-         status:true,
+          status: true,
         },
         select: {
           id: true,
@@ -88,7 +91,7 @@ const bycity = async (req: Request, res: Response): Promise<void> => {
           BloodBank: true,
           BloodType: true,
           city: true,
-          status:true
+          status: true
         },
         take: 50,
         orderBy: {
@@ -103,18 +106,20 @@ const bycity = async (req: Request, res: Response): Promise<void> => {
           data: donors
         };
         res.status(200).json(response);
+        return;
       } else {
         const response: ApiResponse = {
           success: false,
           message: `No donors found in ${fields.city}`,
         };
         res.status(404).json(response);
+        return;
       }
     }
-    
+
   } catch (error) {
     console.error('Error in bycity endpoint:', error);
-    
+
     // Handle Zod validation errors
     if (error instanceof z.ZodError) {
       const response: ApiResponse = {
@@ -122,18 +127,22 @@ const bycity = async (req: Request, res: Response): Promise<void> => {
         message: "Invalid input data",
         error: error.issues.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')
       };
-       res.status(400).json(response);
+      res.status(400).json(response);
+      return;
     }
 
+    // Handle Prisma constraint violations
     if (typeof error === 'object' && error !== null && 'code' in error && (error as any).code === 'P2002') {
       const response: ApiResponse = {
         success: false,
         message: "Database constraint violation",
         error: "Duplicate entry found"
       };
-       res.status(409).json(response);
+      res.status(409).json(response);
       return;
     }
+
+    // Generic error handler
     const response: ApiResponse = {
       success: false,
       message: "Internal server error",

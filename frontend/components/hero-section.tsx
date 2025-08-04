@@ -52,13 +52,25 @@ export default function HeroSection() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300">
-            <Link href="#" className="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl inline-block">
-              Find Blood Banks
-            </Link>
-            <Link href="/register/donor" className="px-8 py-4 border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105 inline-block">
-              Become a Donor
-            </Link>
-          </div>
+  <Link
+    href="/blood-banks"
+    className="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl inline-block"
+  >
+    Find Blood Banks
+  </Link>
+  <Link
+    href="/register/donor"
+    className="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl inline-block"
+  >
+    Become a Donor
+  </Link>
+  <Link
+    href="/patientlist"
+    className="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl inline-block"
+  >
+    Active Blood Requests
+  </Link>
+</div>
         </div>
 
         {/* Features Grid */}

@@ -9,22 +9,21 @@ import PorDBycity from '../routes/getPatorDonByCity.routes.ts';
 
 const app=express();
 app.use(express.json());
-import cors from "cors";
+
 
 //import morgan from 'morgan'
 
-// app.use(express.json());
-
-// app.use(cors({
-//     origin:"localhost:5000",
-//     methods:['GET','POST'],
-//     credentials:true
-// }))
+ app.use(express.json());
+ import cors from "cors";
+ app.use(cors({
+   origin: "http://localhost:3000", // <-- include http://
+   credentials: true
+ }));
 // app.use(morgan('dev'))
 app.use(express.json()); // Add this to parse JSON request bodies
 app.use(cookieParser());
 
-const PORT: number = 3000;
+const PORT: number = 3001;
 
 
 app.use('/', patientRegsitration);

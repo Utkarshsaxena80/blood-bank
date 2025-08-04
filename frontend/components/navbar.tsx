@@ -1,5 +1,5 @@
 "use client"
-
+import dynamic from "next/dynamic";
 import { useState } from "react"
 import { useTheme } from "next-themes"
 import { Moon, Sun, Heart, ChevronDown, Menu, X } from "lucide-react"
@@ -111,7 +111,7 @@ export default function Navbar() {
                   setShowLoginDropdown(!showLoginDropdown)
                   setShowRegisterDropdown(false)
                 }}
-                className="flex items-center space-x-2 px-4 py-2 border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white rounded-lg transition-all duration-200 hover:scale-105"
+               className="flex items-center space-x-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200 hover:scale-105"
               >
                 <span>Login</span>
                 <ChevronDown className={`h-4 w-4 transition-transform ${showLoginDropdown ? 'rotate-180' : ''}`} />

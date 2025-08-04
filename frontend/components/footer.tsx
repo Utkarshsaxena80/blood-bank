@@ -7,12 +7,11 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   const quickLinks = [
-    { name: "Find Blood Banks", href: "#" },
-    { name: "Become a Donor", href: "#" },
-    { name: "Request Blood", href: "#" },
-    { name: "About Us", href: "#" },
-    { name: "Contact", href: "#" },
-    { name: "FAQ", href: "#" }
+    { name: "Find Blood Banks", href: "/blood-banks" },         // Page to list/search blood banks
+    { name: "Become a Donor", href: "/register/donor" },        // Donor registration page
+    { name: "Request Blood", href: "/dashboard/patient" },      // Patient dashboard/request page (or create /request-blood if you want a separate request page)
+    { name: "About Us", href: "/about" }                // About page
+                            
   ]
 
 
@@ -65,7 +64,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center space-x-3">
                 <User className="h-5 w-5 text-red-400" />
-                <span className="text-gray-300">Utkarsh Ayushmna Krishna Hemnat  </span>
+                <span className="text-gray-300">Utkarsh Ayushman Krishna Hemant  </span>
               </div>
               <div className="flex items-start space-x-3">
                 <MapPin className="h-5 w-5 text-red-400 mt-1" />
