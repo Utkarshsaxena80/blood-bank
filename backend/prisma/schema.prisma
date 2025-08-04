@@ -39,5 +39,19 @@ city String
 state String
 age Int
 createdAt DateTime @default(now())
+}
+model bloodBanks{
+  id String @id @default(uuid())
+name String
+adminName String
+email String
+password String
+phone String
+BloodBank String
+totalBloodBags Int
+city String 
+state String
+age Int
+createdAt DateTime @default(now())
 
 }
