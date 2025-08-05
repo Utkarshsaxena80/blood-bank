@@ -50,7 +50,7 @@ export default function AdminLoginPage() {
           </button>
         </form>
         <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-          Don't have an account?{" "}
+          Dont have an account?{" "}
           <Link href="/register/admin" className="text-red-600 hover:underline">Register</Link>
         </p>
       </div>

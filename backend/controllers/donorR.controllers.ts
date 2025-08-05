@@ -14,7 +14,7 @@ const donorSchema = z.object({
   status:z.boolean(),
   state: z.string().min(1),
   bloodType: z.string(),
-  age: z.number().positive().int(), 
+  age: z.number().positive().int(),
 });
 
 /**

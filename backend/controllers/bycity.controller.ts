@@ -15,7 +15,6 @@ interface UserResponse {
   BloodBank: string;
   BloodType: string;
   city?: string;
-  status?: boolean;
 }
 
 interface ApiResponse<T = any> {
@@ -29,9 +28,8 @@ const bycity = async (req: Request, res: Response): Promise<void> => {
   try {
     const fields = requiredField.parse(req.query);
     const normalizedCity = fields.city.toLowerCase().trim();
-
+    
     if (fields.field === 1) {
-      // Patient search
       const patients = await prisma.patients.findMany({
         where: {
           city: {
@@ -72,9 +70,8 @@ const bycity = async (req: Request, res: Response): Promise<void> => {
         res.status(404).json(response);
         return;
       }
-
+      
     } else if (fields.field === 2) {
-      // Donor search
       const donors = await prisma.donors.findMany({
         where: {
           city: {
@@ -119,7 +116,7 @@ const bycity = async (req: Request, res: Response): Promise<void> => {
 
   } catch (error) {
     console.error('Error in bycity endpoint:', error);
-
+    
     // Handle Zod validation errors
     if (error instanceof z.ZodError) {
       const response: ApiResponse = {

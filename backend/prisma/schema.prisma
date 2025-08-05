@@ -9,11 +9,10 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
-
 model Patients{
 id String @id @default(uuid())
 name String
@@ -57,4 +56,18 @@ city String
 state String
 createdAt DateTime @default(now())
 }
-
+model DonationRequest {
+  id           String    @id @default(uuid())
+  donorId      String
+  donor        String    
+  bloodBankId  String
+  bloodBank    String 
+  createdAt    DateTime  @default(now())
+  status       String    @default("pending") 
+  donorBloodType String
+  patientId String
+  patientCity String
+  patientBloodBankId String
+  patientBloodBankName String
+  patientBloodType String
+}
