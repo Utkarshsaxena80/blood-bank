@@ -1,5 +1,6 @@
 "use client"
 import { User } from "lucide-react"
+
 import { Heart, Users, Award, Target, Shield, Globe } from "lucide-react"
 import Link from "next/link"  
 export default function AboutPage() {
@@ -109,7 +110,7 @@ export default function AboutPage() {
               <img
                 src="https://images.pexels.com/photos/4386467/pexels-photo-4386467.jpeg?auto=compress&cs=tinysrgb&w=600"
                 alt="Blood donation"
-                className="rounded-lg shadow-lg w-full h-84 object-cover"
+                  className="rounded-lg shadow-lg w-full h-84 object-cover"
               />
               <div className="absolute inset-0 bg-red-600/10 rounded-lg"></div>
             </div>

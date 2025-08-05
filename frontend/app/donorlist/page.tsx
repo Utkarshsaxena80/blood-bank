@@ -32,7 +32,7 @@ export default function DonorListPage() {
     setError(null);
 
     axios
-      .get("http://localhost:3001/getBycity", {
+      .get("http://localhost:5000/getByCity", {
         params: {
           field: 2,
           city: cityFilter.toLowerCase(),

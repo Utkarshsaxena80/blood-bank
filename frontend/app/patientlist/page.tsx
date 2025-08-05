@@ -32,7 +32,7 @@ export default function PatientListPage() {
     setError(null);
 
     axios
-      .get("http://localhost:3001/getBycity", {
+      .get("http://localhost:5000/getByCity", {
         params: {
           field: 1,
           city: cityFilter.toLowerCase(),
