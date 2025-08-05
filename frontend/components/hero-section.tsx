@@ -70,6 +70,13 @@ export default function HeroSection() {
   >
     Active Blood Requests
   </Link>
+
+  <Link
+    href="/donorlist"
+    className="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl inline-block"
+  >
+    Active Blood Donors
+  </Link>
 </div>
         </div>
 
