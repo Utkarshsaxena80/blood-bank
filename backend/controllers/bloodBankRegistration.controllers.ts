@@ -52,7 +52,7 @@ const bloodR = async (req: Request, res: Response): Promise<void> => {
       });
     } else {
       //heash password
-      
+
       const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS || "10");
 
       const hashedPassword = await bcrypt.hash(

@@ -3,8 +3,12 @@ import { prisma } from "../utils/prisma.utils.ts";
 import { z } from "zod";
 
 const requiredField = z.object({
-  field: z.enum(['1', '2']).transform((val) => parseInt(val) as 1 | 2),
-  city: z.string().min(1, "City is required").max(100, "City name too long").trim(),
+  field: z.enum(["1", "2"]).transform((val) => parseInt(val) as 1 | 2),
+  city: z
+    .string()
+    .min(1, "City is required")
+    .max(100, "City name too long")
+    .trim(),
 });
 
 interface UserResponse {
@@ -28,7 +32,7 @@ const bycity = async (req: Request, res: Response): Promise<void> => {
   try {
     const fields = requiredField.parse(req.query);
     const normalizedCity = fields.city.toLowerCase().trim();
-    
+
     if (fields.field === 1) {
       const patients = await prisma.patients.findMany({
         where: {
@@ -50,15 +54,15 @@ const bycity = async (req: Request, res: Response): Promise<void> => {
         },
         take: 50,
         orderBy: {
-          createdAt: 'desc'
-        }
+          createdAt: "desc",
+        },
       });
 
       if (patients && patients.length > 0) {
         const response: ApiResponse<UserResponse[]> = {
           success: true,
           message: `Found ${patients.length} patient(s) in ${fields.city}`,
-          data: patients
+          data: patients,
         };
         res.status(200).json(response);
         return;
@@ -70,7 +74,6 @@ const bycity = async (req: Request, res: Response): Promise<void> => {
         res.status(404).json(response);
         return;
       }
-      
     } else if (fields.field === 2) {
       const donors = await prisma.donors.findMany({
         where: {
@@ -88,19 +91,19 @@ const bycity = async (req: Request, res: Response): Promise<void> => {
           BloodBank: true,
           BloodType: true,
           city: true,
-          status: true
+          status: true,
         },
         take: 50,
         orderBy: {
-          createdAt: 'desc'
-        }
+          createdAt: "desc",
+        },
       });
 
       if (donors && donors.length > 0) {
         const response: ApiResponse<UserResponse[]> = {
           success: true,
           message: `Found ${donors.length} donor(s) in ${fields.city}`,
-          data: donors
+          data: donors,
         };
         res.status(200).json(response);
         return;
@@ -113,27 +116,33 @@ const bycity = async (req: Request, res: Response): Promise<void> => {
         return;
       }
     }
-
   } catch (error) {
-    console.error('Error in bycity endpoint:', error);
-    
+    console.error("Error in bycity endpoint:", error);
+
     // Handle Zod validation errors
     if (error instanceof z.ZodError) {
       const response: ApiResponse = {
         success: false,
         message: "Invalid input data",
-        error: error.issues.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')
+        error: error.issues
+          .map((e) => `${e.path.join(".")}: ${e.message}`)
+          .join(", "),
       };
       res.status(400).json(response);
       return;
     }
 
     // Handle Prisma constraint violations
-    if (typeof error === 'object' && error !== null && 'code' in error && (error as any).code === 'P2002') {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as any).code === "P2002"
+    ) {
       const response: ApiResponse = {
         success: false,
         message: "Database constraint violation",
-        error: "Duplicate entry found"
+        error: "Duplicate entry found",
       };
       res.status(409).json(response);
       return;
@@ -143,7 +152,10 @@ const bycity = async (req: Request, res: Response): Promise<void> => {
     const response: ApiResponse = {
       success: false,
       message: "Internal server error",
-      error: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
+      error:
+        process.env.NODE_ENV === "development" && error instanceof Error
+          ? error.message
+          : undefined,
     };
     res.status(500).json(response);
   }
