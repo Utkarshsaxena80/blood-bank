@@ -8,7 +8,7 @@ const bloodBankSchema = z.object({
   name: z.string().min(2, "Name is too short"),
   adminName: z.string().min(2, "Admin name is too short"),
   licenseNumber: z.string().min(2, "License number is too short"),
-  email: z.string().email("Invalid email format"),
+  email: z.email("Invalid email format"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   phone: z
     .string()
@@ -18,7 +18,7 @@ const bloodBankSchema = z.object({
     .number()
     .int("Must be a whole number")
     .nonnegative("Must be 0 or greater"),
-  address: z.string().min(5, "Address is too short"),
+  address: z.string().min(4, "Address is too short"),
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
 });
@@ -30,7 +30,7 @@ const bloodBankSchema = z.object({
  */
 
 const bloodR = async (req: Request, res: Response): Promise<void> => {
-  console.log("hi");
+  console.log("Blood Bank Registration Request:", req.body);
   const bloodBankData = bloodBankSchema.parse(req.body);
   try {
     const userExists = await prisma.bloodBanks.findFirst({
@@ -39,6 +39,11 @@ const bloodR = async (req: Request, res: Response): Promise<void> => {
       },
     });
     if (userExists) {
+      console.error("Registration failed: User already exists", {
+        email: bloodBankData.email,
+        phone: bloodBankData.phone,
+        existingEmail: userExists.email,
+      });
       res.status(409).json({
         message:
           userExists.email === bloodBankData.email
@@ -47,6 +52,7 @@ const bloodR = async (req: Request, res: Response): Promise<void> => {
       });
     } else {
       //heash password
+      
       const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS || "10");
 
       const hashedPassword = await bcrypt.hash(
