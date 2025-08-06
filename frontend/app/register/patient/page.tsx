@@ -63,6 +63,11 @@ export default function PatientRegisterPage() {
       ...formData,
       age: Number(formData.age),
       status: true,
+    },{
+      withCredentials:true,
+      headers:{
+          "Content-Type":"application/json",
+      }
     })
       .then(res => {
         setSuccess("Registration successful!");
