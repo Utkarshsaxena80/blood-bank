@@ -57,13 +57,22 @@ export default function AdminRegisterPage() {
     setError(null);
     setSuccess(null);
 // connection set up
-    axios.post("http://localhost:5000/register-bloodBank", {
-      ...formData,
-      totalBloodBags: 0, // Backend expects this, but will override to 0 
-    })
+axios.post("http://localhost:5000/register-bloodBank", 
+  {
+    ...formData,
+    totalBloodBags: 0, // Backend expects this, but will override to 0 
+  },
+  {
+    withCredentials: true,
+    headers: {
+      "Content-Type": "application/json",
+    }
+  }
+)
+
       .then(res => {
         setSuccess("Registration successful!");
-        setTimeout(() => router.push("/login/admin"), 1500);
+        setTimeout(() => router.push("/"), 1500);
       })
       .catch(err => {
         setError(err.response?.data?.message || "Registration failed");

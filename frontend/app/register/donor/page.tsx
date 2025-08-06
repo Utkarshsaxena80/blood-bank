@@ -64,10 +64,16 @@ export default function DonorRegisterPage() {
       ...formData,
       age: Number(formData.age),
       status: true,
-    })
+    },
+  {
+    withCredentials: true,
+    headers: {
+      "Content-Type": "application/json",
+    }
+  })
       .then(res => {
         setSuccess("Registration successful!");
-        setTimeout(() => router.push("/login/donor"), 1500);
+        setTimeout(() => router.push("/"), 1500);
       })
       .catch(err => {
         setError(err.response?.data?.message || "Registration failed");

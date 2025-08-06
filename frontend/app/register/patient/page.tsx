@@ -63,10 +63,11 @@ export default function PatientRegisterPage() {
       ...formData,
       age: Number(formData.age),
       status: true,
-    })
-      .then(res => {
-        setSuccess("Registration successful!");
-        setTimeout(() => router.push("/login/patient"), 1500);
+    },{
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        }
       })
       .catch(err => {
         setError(err.response?.data?.message || "Registration failed");
