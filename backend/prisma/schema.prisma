@@ -60,21 +60,48 @@ model bloodBanks {
 }
 
 model DonationRequest {
-  id                   String    @id @default(uuid())
+  id                   String      @id @default(uuid())
   donorId              String
   donor                String
   bloodBankId          String
   bloodBank            String
-  createdAt            DateTime  @default(now())
-  status               String    @default("pending")
+  createdAt            DateTime    @default(now())
+  status               String      @default("pending")
   donorBloodType       String
   patientId            String
   patientCity          String
   patientBloodBankId   String
   patientBloodBankName String
   patientBloodType     String
-  urgencyLevel         String?   @default("medium")
-  requiredUnits        Int?      @default(1)
+  urgencyLevel         String?     @default("medium")
+  requiredUnits        Int?        @default(1)
   notes                String?
   preferredDate        DateTime?
+  approvedAt           DateTime?
+  bloodUnits           BloodUnit[] // Relation to blood units created from this donation
+}
+
+model BloodUnit {
+  id                String          @id @default(uuid())
+  unitNumber        String // Sequential number for this donation (e.g., "1", "2", "3")
+  donationRequestId String
+  donationRequest   DonationRequest @relation(fields: [donationRequestId], references: [id])
+  donorId           String
+  donorName         String
+  donorBloodType    String
+  bloodBankId       String
+  bloodBankName     String
+  donationDate      DateTime        @default(now())
+  expiryDate        DateTime
+  volume            Int             @default(450) // Volume in ml (standard blood bag is ~450ml)
+  status            String          @default("available") // available, used, expired, discarded
+  barcode           String? // Optional barcode for physical tracking
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  usedAt            DateTime?
+  patientUsedFor    String? // Patient ID if blood unit is used
+  notes             String?
+
+  @@unique([donationRequestId, unitNumber]) // Ensure unique unit numbers per donation
+  @@map("blood_units")
 }
