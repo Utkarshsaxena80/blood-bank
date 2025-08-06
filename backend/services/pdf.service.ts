@@ -87,7 +87,7 @@ class PDFService {
     doc
       .fontSize(24)
       .fillColor("#d32f2f")
-      .text("🩸 BLOOD DONATION CERTIFICATE", 50, 50, { align: "center" });
+      .text("BLOOD DONATION CERTIFICATE", 50, 50, { align: "center" });
 
     doc
       .fontSize(16)
@@ -257,7 +257,7 @@ class PDFService {
     doc
       .fontSize(14)
       .fillColor("#d32f2f")
-      .text("Thank you for saving lives! 💝", 50, footerY, { align: "center" });
+      .text("Thank you for saving lives!", 50, footerY, { align: "center" });
 
     // Important notes
     doc

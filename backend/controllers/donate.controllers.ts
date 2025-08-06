@@ -10,7 +10,7 @@ interface AuthenticatedRequest extends Request {
 
 // Input validation schema
 const donationRequestSchema = z.object({
-  patientId: z.string().uuid("Invalid patient ID format"),
+  patientId: z.uuid("Invalid patient ID format"),
   urgencyLevel: z
     .enum(["low", "medium", "high", "critical"])
     .optional()
