@@ -1,11 +1,13 @@
 # Test Example: PDF Certificate Generation
 
 ## Test Scenario
+
 A donor named "John Doe" donates 2 units of A+ blood to help a patient.
 
 ## Step 1: Blood Bank Accepts Donation
 
 **Request:**
+
 ```bash
 POST /donations/accept
 {
@@ -16,6 +18,7 @@ POST /donations/accept
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -39,7 +42,7 @@ POST /donations/accept
         "expiryDate": "2025-09-10T14:30:00.000Z"
       },
       {
-        "id": "unit-2-uuid", 
+        "id": "unit-2-uuid",
         "unitNumber": "2",
         "barcode": "City-General-12345678-2",
         "volume": 450,
@@ -58,7 +61,7 @@ POST /donations/accept
 The generated PDF would contain:
 
 ```
-🩸 BLOOD DONATION CERTIFICATE
+BLOOD DONATION CERTIFICATE
 Official Donation Record
 
 City General Blood Bank
@@ -74,24 +77,22 @@ Age: 32 years                          Urgency Level: MEDIUM
 
 DONATION DETAILS
 ┌─────────────────────────────────────────────────────────────┐
-│ Total Units Donated: 2 Units                               │
-│ Total Volume: 900 ml                                       │
-│ Patient Blood Type: A+                                     │ 
-│ Donation Request ID: 12345678                              │
-│                                                            │
-│ This donation will help save lives.                       │
-│ Thank you for your generous contribution!                 │
+│ Total Units Donated: 2 Units                                │
+│ Total Volume: 900 ml                                        │
+│ Patient Blood Type: A+                                      │
+│ Donation Request ID: 12345678                               │
+│                                                             │
+│ This donation will help save lives.                         │
+│ Thank you for your generous contribution!                   │
 └─────────────────────────────────────────────────────────────┘
 
 INDIVIDUAL BLOOD UNITS
 ┌──────────────────────────────────────────────────────────────────┐
-│ Unit# │ Unit ID      │ Barcode              │ Vol │ Expiry Date │
+│ Unit# │ Unit ID      │ Barcode              │ Vol │ Expiry Date  │
 ├──────────────────────────────────────────────────────────────────┤
-│   1   │ unit-1-uuid  │ City-General-123-1   │ 450 │ Sep 10, 25  │
-│   2   │ unit-2-uuid  │ City-General-123-2   │ 450 │ Sep 10, 25  │
+│   1   │ unit-1-uuid  │ City-General-123-1   │ 450 │ Sep 10, 25   │
+│   2   │ unit-2-uuid  │ City-General-123-2   │ 450 │ Sep 10, 25   │
 └──────────────────────────────────────────────────────────────────┘
-
-Thank you for saving lives! 💝
 
 Important Notes:
 • Please maintain a healthy diet and stay hydrated
@@ -108,11 +109,13 @@ This is a computer-generated document and does not require signature.
 ## Step 3: Donor Downloads Certificate
 
 **Request:**
+
 ```bash
 GET /donations/certificate/12345678-1234-1234-1234-123456789012/download
 ```
 
 **Response:**
+
 - Content-Type: application/pdf
 - Content-Disposition: attachment; filename="donation-certificate-John-Doe-2025-08-06.pdf"
 - File streams as PDF download
@@ -120,11 +123,13 @@ GET /donations/certificate/12345678-1234-1234-1234-123456789012/download
 ## Step 4: Donor Views History
 
 **Request:**
+
 ```bash
 GET /donations/my-donations
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -138,7 +143,7 @@ GET /donations/my-donations
         "donationId": "12345678-1234-1234-1234-123456789012",
         "donationDate": "2025-08-06T14:30:00.000Z",
         "bloodType": "A+",
-        "bloodBank": "City General Blood Bank", 
+        "bloodBank": "City General Blood Bank",
         "unitsCount": 2,
         "totalVolume": 900,
         "unitsUsed": 0,
@@ -153,7 +158,7 @@ GET /donations/my-donations
         "unitsCount": 3,
         "totalVolume": 1350,
         "unitsUsed": 3,
-        "urgencyLevel": "high", 
+        "urgencyLevel": "high",
         "certificateDownloadUrl": "/donations/certificate/previous-donation-uuid/download"
       }
     ]
@@ -171,4 +176,4 @@ GET /donations/my-donations
 6. **History Tracking**: Complete donation history with certificate links
 7. **Security**: Only donors can access their own certificates
 
-This system provides donors with a professional, comprehensive record of their life-saving contributions! 🩸📋
+This system provides donors with a professional, comprehensive record of their life-saving contributions!
