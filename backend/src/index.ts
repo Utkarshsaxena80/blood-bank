@@ -8,19 +8,20 @@ import PorDBycity from "../routes/getPatorDonByCity.routes.ts";
 import donate from "../routes/donate.routes.ts";
 import getDonations from "../routes/getActiveDonations.routes.ts";
 import acceptDonation from "../routes/acceptDonation.routes.ts";
+import cors from 'cors'
 
 const app = express();
 app.use(express.json());
 
-// app.use(cors({
-//     origin:"localhost:5000",
-//     methods:['GET','POST'],
-//     credentials:true
-// }))
-//pp.use(morgan('dev'))
+app.use(cors({
+    origin:"http://localhost:3000",
+    methods:['GET','POST'],
+    credentials:true
+}))
+
 app.use(cookieParser());
 
-const PORT: number = 3000;
+const PORT: number = 5000;
 
 app.use("/", patientRegsitration);
 app.use("/", donorRegistration);
