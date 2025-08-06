@@ -60,6 +60,11 @@ export default function AdminRegisterPage() {
     axios.post("http://localhost:5000/register-bloodBank", {
       ...formData,
       totalBloodBags: 0, // Backend expects this, but will override to 0 
+    },{
+      withCredentials:true,
+      headers:{
+        "Content-Type":"application/json",
+      }
     })
       .then(res => {
         setSuccess("Registration successful!");
