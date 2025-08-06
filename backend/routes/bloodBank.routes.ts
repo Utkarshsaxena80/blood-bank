@@ -1,7 +1,7 @@
-import express from "express";
+import express from 'express'
 
-const bloodBank = express.Router();
-import { bloodR } from "../controllers/bloodBankRegistration.controllers.ts";
-bloodBank.post("/register-bloodBank", bloodR);
+const bloodBank=express.Router()
+import { bloodR } from '../controllers/bloodBankRegistration.controllers.ts';
+bloodBank.post('/register-bloodBank',bloodR);
 
-export default bloodBank;
+export  default bloodBank

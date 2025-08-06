@@ -11,7 +11,7 @@ interface AuthenticatedRequest extends Request {
 
 // Input validation schema for accepting donation
 const acceptDonationSchema = z.object({
-  donationRequestId: z.uuid("Invalid donation request ID format"),
+  donationRequestId: z.string().uuid("Invalid donation request ID format"),
   numberOfUnits: z.number().min(1).max(10).optional().default(1),
   notes: z.string().max(500).optional(),
   expiryDays: z.number().min(1).max(42).optional().default(35), // Blood typically expires in 35 days
