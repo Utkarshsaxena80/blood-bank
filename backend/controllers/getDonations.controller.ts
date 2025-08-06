@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { prisma } from '../utils/prisma.utils.ts';
+import { prisma } from "../utils/prisma.utils.ts";
 
 interface AuthenticatedRequest extends Request {
   user?: {
@@ -9,24 +9,23 @@ interface AuthenticatedRequest extends Request {
 
 const getDonation = async (req: AuthenticatedRequest, res: Response) => {
   try {
-  
     const bloodBankUserId = req.user?.userId;
 
     if (!bloodBankUserId) {
       return res.status(401).json({
         error: "Unauthorized. User ID missing.",
-        success: false
+        success: false,
       });
     }
 
     // Get all donation requests for this blood bank
     const donationRequests = await prisma.donationRequest.findMany({
       where: {
-        bloodBankId: bloodBankUserId
+        bloodBankId: bloodBankUserId,
       },
       orderBy: {
-        createdAt: 'desc' // Most recent first
-      }
+        createdAt: "desc", // Most recent first
+      },
     });
 
     // Check if any requests found
@@ -35,7 +34,7 @@ const getDonation = async (req: AuthenticatedRequest, res: Response) => {
         success: true,
         message: "No donation requests found for this blood bank.",
         data: [],
-        count: 0
+        count: 0,
       });
     }
 
@@ -46,32 +45,38 @@ const getDonation = async (req: AuthenticatedRequest, res: Response) => {
       data: donationRequests,
       count: donationRequests.length,
       summary: {
-        pending: donationRequests.filter(req => req.status === 'pending').length,
-        approved: donationRequests.filter(req => req.status === 'approved').length,
-        completed: donationRequests.filter(req => req.status === 'completed').length,
-        cancelled: donationRequests.filter(req => req.status === 'cancelled').length,
-        rejected: donationRequests.filter(req => req.status === 'rejected').length
-      }
+        pending: donationRequests.filter((req) => req.status === "pending")
+          .length,
+        success: donationRequests.filter((req) => req.status === "success")
+          .length,
+        approved: donationRequests.filter((req) => req.status === "approved")
+          .length,
+        completed: donationRequests.filter((req) => req.status === "completed")
+          .length,
+        cancelled: donationRequests.filter((req) => req.status === "cancelled")
+          .length,
+        rejected: donationRequests.filter((req) => req.status === "rejected")
+          .length,
+      },
     });
-
   } catch (error) {
     console.error("Error in getDonation handler:", error);
-    
+
     // Handle specific Prisma errors
     if (typeof error === "object" && error !== null && "code" in error) {
       const err = error as { code?: string };
-      
-      if (err.code === 'P2025') {
+
+      if (err.code === "P2025") {
         return res.status(404).json({
           error: "Blood bank not found.",
-          success: false
+          success: false,
         });
       }
     }
 
     return res.status(500).json({
       error: "Internal Server Error",
-      success: false
+      success: false,
     });
   }
 };
