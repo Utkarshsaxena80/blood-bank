@@ -60,17 +60,21 @@ model bloodBanks {
 }
 
 model DonationRequest {
-  id                   String   @id @default(uuid())
+  id                   String    @id @default(uuid())
   donorId              String
   donor                String
   bloodBankId          String
   bloodBank            String
-  createdAt            DateTime @default(now())
-  status               String   @default("pending")
+  createdAt            DateTime  @default(now())
+  status               String    @default("pending")
   donorBloodType       String
   patientId            String
   patientCity          String
   patientBloodBankId   String
   patientBloodBankName String
   patientBloodType     String
+  urgencyLevel         String?   @default("medium")
+  requiredUnits        Int?      @default(1)
+  notes                String?
+  preferredDate        DateTime?
 }
