@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import fs from 'fs';
-import path from 'path';
-import { prisma } from '../utils/prisma.utils.ts';
-import PDFService from '../services/pdf.service.ts';
+import fs from "fs";
+import path from "path";
+import { prisma } from "../utils/prisma.utils.ts";
+import PDFService from "../services/pdf.service.ts";
 
 interface AuthenticatedRequest extends Request {
   user?: {
@@ -11,7 +11,10 @@ interface AuthenticatedRequest extends Request {
 }
 
 // Download donation certificate PDF
-const downloadDonationCertificate = async (req: AuthenticatedRequest, res: Response) => {
+const downloadDonationCertificate = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   try {
     const { donationRequestId } = req.params;
     const userId = req.user?.userId;
@@ -28,8 +31,8 @@ const downloadDonationCertificate = async (req: AuthenticatedRequest, res: Respo
       where: {
         id: donationRequestId,
         donorId: userId, // Ensure donor can only download their own certificate
-        status: "success"
-      }
+        status: "success",
+      },
     });
 
     if (!donationRequest) {
@@ -40,41 +43,42 @@ const downloadDonationCertificate = async (req: AuthenticatedRequest, res: Respo
     }
 
     // Get all related data for PDF generation
-    const [donorDetails, patientDetails, bloodBank, bloodUnits] = await Promise.all([
-      prisma.donors.findUnique({
-        where: { id: donationRequest.donorId },
-        select: {
-          name: true,
-          email: true,
-          phone: true,
-          age: true
-        }
-      }),
-      prisma.patients.findUnique({
-        where: { id: donationRequest.patientId },
-        select: {
-          BloodType: true
-        }
-      }),
-      prisma.bloodBanks.findUnique({
-        where: { id: donationRequest.bloodBankId },
-        select: {
-          name: true,
-          address: true
-        }
-      }),
-      prisma.bloodUnit.findMany({
-        where: { donationRequestId: donationRequestId },
-        select: {
-          id: true,
-          unitNumber: true,
-          barcode: true,
-          volume: true,
-          expiryDate: true,
-          donationDate: true
-        }
-      })
-    ]);
+    const [donorDetails, patientDetails, bloodBank, bloodUnits] =
+      await Promise.all([
+        prisma.donors.findUnique({
+          where: { id: donationRequest.donorId },
+          select: {
+            name: true,
+            email: true,
+            phone: true,
+            age: true,
+          },
+        }),
+        prisma.patients.findUnique({
+          where: { id: donationRequest.patientId },
+          select: {
+            BloodType: true,
+          },
+        }),
+        prisma.bloodBanks.findUnique({
+          where: { id: donationRequest.bloodBankId },
+          select: {
+            name: true,
+            address: true,
+          },
+        }),
+        prisma.bloodUnit.findMany({
+          where: { donationRequestId: donationRequestId },
+          select: {
+            id: true,
+            unitNumber: true,
+            barcode: true,
+            volume: true,
+            expiryDate: true,
+            donationDate: true,
+          },
+        }),
+      ]);
 
     if (!donorDetails || !patientDetails || !bloodBank) {
       return res.status(404).json({
@@ -95,16 +99,16 @@ const downloadDonationCertificate = async (req: AuthenticatedRequest, res: Respo
       bloodBankAddress: bloodBank.address || `${bloodBank.name} Blood Bank`,
       donationDate: bloodUnits[0]?.donationDate || new Date(),
       numberOfUnits: bloodUnits.length,
-      bloodUnits: bloodUnits.map(unit => ({
+      bloodUnits: bloodUnits.map((unit) => ({
         id: unit.id,
         unitNumber: unit.unitNumber,
-        barcode: unit.barcode || 'N/A',
+        barcode: unit.barcode || "N/A",
         volume: unit.volume,
-        expiryDate: unit.expiryDate
+        expiryDate: unit.expiryDate,
       })),
       donationRequestId: donationRequestId,
-      urgencyLevel: donationRequest.urgencyLevel || 'medium',
-      patientBloodType: patientDetails.BloodType
+      urgencyLevel: donationRequest.urgencyLevel || "medium",
+      patientBloodType: patientDetails.BloodType,
     });
 
     // Check if file exists
@@ -116,37 +120,42 @@ const downloadDonationCertificate = async (req: AuthenticatedRequest, res: Respo
     }
 
     // Set headers for PDF download
-    const filename = `donation-certificate-${donorDetails.name.replace(/\s+/g, '-')}-${new Date().toISOString().slice(0, 10)}.pdf`;
-    
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-    res.setHeader('Content-Length', fs.statSync(pdfFilePath).size);
+    const filename = `donation-certificate-${donorDetails.name.replace(
+      /\s+/g,
+      "-"
+    )}-${new Date().toISOString().slice(0, 10)}.pdf`;
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+    res.setHeader("Content-Length", fs.statSync(pdfFilePath).size);
 
     // Stream the PDF file
     const fileStream = fs.createReadStream(pdfFilePath);
     fileStream.pipe(res);
 
     // Clean up the temporary file after streaming (optional)
-    fileStream.on('end', () => {
+    fileStream.on("end", () => {
       setTimeout(() => {
         if (fs.existsSync(pdfFilePath)) {
           fs.unlinkSync(pdfFilePath);
         }
       }, 5000); // Delete after 5 seconds
     });
-
   } catch (error) {
     console.error("Error in downloadDonationCertificate handler:", error);
-    
+
     return res.status(500).json({
       error: "Internal Server Error",
-      success: false
+      success: false,
     });
   }
 };
 
 // Get donor's donation history with certificate download links
-const getDonorDonationHistory = async (req: AuthenticatedRequest, res: Response) => {
+const getDonorDonationHistory = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   try {
     const donorId = req.user?.userId;
 
@@ -161,7 +170,7 @@ const getDonorDonationHistory = async (req: AuthenticatedRequest, res: Response)
     const donations = await prisma.donationRequest.findMany({
       where: {
         donorId: donorId,
-        status: "success"
+        status: "success",
       },
       include: {
         bloodUnits: {
@@ -171,25 +180,26 @@ const getDonorDonationHistory = async (req: AuthenticatedRequest, res: Response)
             volume: true,
             status: true,
             usedAt: true,
-            patientUsedFor: true
-          }
-        }
+            patientUsedFor: true,
+          },
+        },
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: "desc",
+      },
     });
 
-    const history = donations.map(donation => ({
+    const history = donations.map((donation) => ({
       donationId: donation.id,
       donationDate: donation.createdAt,
       bloodType: donation.donorBloodType,
       bloodBank: donation.bloodBank,
       unitsCount: donation.bloodUnits.length,
       totalVolume: donation.bloodUnits.length * 450,
-      unitsUsed: donation.bloodUnits.filter(unit => unit.status === 'used').length,
+      unitsUsed: donation.bloodUnits.filter((unit) => unit.status === "used")
+        .length,
       urgencyLevel: donation.urgencyLevel,
-      certificateDownloadUrl: `/donations/certificate/${donation.id}/download`
+      certificateDownloadUrl: `/donations/certificate/${donation.id}/download`,
     }));
 
     return res.status(200).json({
@@ -197,18 +207,23 @@ const getDonorDonationHistory = async (req: AuthenticatedRequest, res: Response)
       message: "Donation history retrieved successfully.",
       data: {
         totalDonations: history.length,
-        totalUnits: history.reduce((sum, donation) => sum + donation.unitsCount, 0),
-        totalVolume: history.reduce((sum, donation) => sum + donation.totalVolume, 0),
-        donations: history
-      }
+        totalUnits: history.reduce(
+          (sum, donation) => sum + donation.unitsCount,
+          0
+        ),
+        totalVolume: history.reduce(
+          (sum, donation) => sum + donation.totalVolume,
+          0
+        ),
+        donations: history,
+      },
     });
-
   } catch (error) {
     console.error("Error in getDonorDonationHistory handler:", error);
-    
+
     return res.status(500).json({
       error: "Internal Server Error",
-      success: false
+      success: false,
     });
   }
 };
