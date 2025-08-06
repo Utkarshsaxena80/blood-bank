@@ -4,6 +4,6 @@ import { patientR } from "../controllers/patientRegis.controllers.ts";
 
 const patientRegsitration: express.Router = express.Router();
 
-patientRegsitration.post("/register-patient", patientR);
+patientRegsitration.post("/patient/register", patientR);
 
 export default patientRegsitration;

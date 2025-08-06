@@ -3,6 +3,6 @@ import { donorR } from "../controllers/donorR.controllers.ts";
 
 const donorRegistration: express.Router = express.Router();
 
-donorRegistration.post("/donor-registration", donorR);
+donorRegistration.post("/donor/register", donorR);
 
 export default donorRegistration;
