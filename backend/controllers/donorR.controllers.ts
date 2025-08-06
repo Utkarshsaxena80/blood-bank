@@ -7,11 +7,11 @@ import { generateToken } from "../utils/jwt.utils.ts";
 const donorSchema = z.object({
   name: z.string().min(2, "Name is too short"),
   phone: z.string().min(10, "Invalid phone number"),
-  email: z.email("Invalid email format"),
+  email: z.string().email("Invalid email format"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   bloodBank: z.string().min(1),
   city: z.string().min(1),
-  status: z.boolean(),
+  status:z.boolean(),
   state: z.string().min(1),
   bloodType: z.string(),
   age: z.number().positive().int(),
@@ -32,6 +32,7 @@ const donorR = async (req: Request, res: Response): Promise<void> => {
       },
     });
     if (userExists) {
+
       res.status(409).json({
         message:
           userExists.email === patientData.email
@@ -56,7 +57,7 @@ const donorR = async (req: Request, res: Response): Promise<void> => {
           BloodBank: patientData.bloodBank,
           BloodType: patientData.bloodType,
           city: patientData.city,
-          status: patientData.status,
+          status:patientData.status,
           state: patientData.state,
           age: patientData.age,
         },

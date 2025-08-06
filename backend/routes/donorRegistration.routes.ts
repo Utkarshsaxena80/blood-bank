@@ -1,8 +1,8 @@
-import express from "express";
-import { donorR } from "../controllers/donorR.controllers.ts";
+import express from 'express'
+import { donorR } from '../controllers/donorR.controllers.ts'
 
-const donorRegistration: express.Router = express.Router();
+const donorRegistration:express.Router=express.Router()
 
-donorRegistration.post("/donor-registration", donorR);
+donorRegistration.post('/donor-registration',donorR)
 
-export default donorRegistration;
+export default donorRegistration

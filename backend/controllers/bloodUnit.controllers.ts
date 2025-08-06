@@ -10,8 +10,8 @@ interface AuthenticatedRequest extends Request {
 
 // Input validation schema for using blood unit
 const useBloodUnitSchema = z.object({
-  bloodUnitId: z.uuid("Invalid blood unit ID format"),
-  patientId: z.uuid("Invalid patient ID format"),
+  bloodUnitId: z.string().uuid("Invalid blood unit ID format"),
+  patientId: z.string().uuid("Invalid patient ID format"),
   notes: z.string().max(500).optional(),
 });
 
