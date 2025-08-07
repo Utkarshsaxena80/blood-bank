@@ -120,7 +120,7 @@ export default function AdminDashboard() {
                     Donation Requests
                   </h3>
                   <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Manage all incoming blood donation requests from donors.
+                    Manage all incoming blood donation requests from Donors.
                   </p>
                 </div>
                 <div className="flex space-x-3">
