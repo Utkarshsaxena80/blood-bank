@@ -21,6 +21,7 @@ const router = Router();
 // Accept a donation request and create blood unit
 router.post("/accept", authMiddleware, acceptDonation);
 
+ //router.post('/getPdf',authMiddleware,getPdf)
 // Reject a donation request
 router.put("/reject/:donationRequestId", authMiddleware, rejectDonation);
 

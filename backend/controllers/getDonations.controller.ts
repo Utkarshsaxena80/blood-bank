@@ -62,7 +62,6 @@ const getDonation = async (req: AuthenticatedRequest, res: Response) => {
   } catch (error) {
     console.error("Error in getDonation handler:", error);
 
-    // Handle specific Prisma errors
     if (typeof error === "object" && error !== null && "code" in error) {
       const err = error as { code?: string };
 

@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import { prisma } from "../utils/prisma.utils.ts";
 import { z } from "zod";
 import PDFService from "../services/pdf.service.ts";
+import path from 'path'
+import { file } from "pdfkit";
+
 
 interface AuthenticatedRequest extends Request {
   user?: {
@@ -86,7 +89,6 @@ const acceptDonation = async (req: AuthenticatedRequest, res: Response) => {
         },
       });
 
-      // Create individual blood unit records
       const bloodUnits = [];
       for (let i = 1; i <= numberOfUnits; i++) {
         const bloodUnit = await tx.bloodUnit.create({
@@ -156,6 +158,9 @@ const acceptDonation = async (req: AuthenticatedRequest, res: Response) => {
           urgencyLevel: donationRequest.urgencyLevel || "medium",
           patientBloodType: patientDetails.BloodType,
         });
+        const filename=path.basename(pdfFilePath)
+        const pdfUrl=`http://localhost:5000/certificates/${filename}`
+
 
         return res.status(200).json({
           success: true,
@@ -164,7 +169,7 @@ const acceptDonation = async (req: AuthenticatedRequest, res: Response) => {
             donationRequest: result.updatedDonationRequest,
             bloodUnits: result.bloodUnits,
             totalUnitsCreated: result.bloodUnits.length,
-            certificatePDF: pdfFilePath,
+            certificateUrl: pdfUrl,
           },
         });
       }
