@@ -16,7 +16,6 @@ const getAllPatients = async (req: Request, res: Response): Promise<void> => {
         age: true,
       },
     });
-    console.log(patients);
 
     res
       .status(200)

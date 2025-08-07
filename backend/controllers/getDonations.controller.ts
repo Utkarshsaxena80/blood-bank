@@ -18,15 +18,33 @@ const getDonation = async (req: AuthenticatedRequest, res: Response) => {
       });
     }
 
-    // Get all donation requests for this blood bank
-    const donationRequests = await prisma.donationRequest.findMany({
-      where: {
-        bloodBankId: bloodBankUserId,
-      },
-      orderBy: {
-        createdAt: "desc", // Most recent first
-      },
-    });
+    // First, get the blood bank's name and city using the userId
+// First, get the blood bank's name and city using the userId
+const bloodBank = await prisma.bloodBanks.findUnique({
+  where: {
+    id: bloodBankUserId,
+  },
+});
+
+if (!bloodBank) {
+  return res.status(404).json({
+    success: false,
+    error: "Blood bank not found for the logged-in user.",
+  });
+}
+
+// Now fetch all donation requests where bloodBankName and city match
+const donationRequests = await prisma.donationRequest.findMany({
+  where: {
+    bloodBank: bloodBank.name, // Match blood bank name from the DonationRequest model
+    patientCity: bloodBank.city, // Using patientCity since that's what DonationRequest has
+  },
+  orderBy: {
+    createdAt: "desc",
+  },
+});
+
+
 
     // Check if any requests found
     if (!donationRequests || donationRequests.length === 0) {

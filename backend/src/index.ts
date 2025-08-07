@@ -9,30 +9,21 @@ import donate from "../routes/donate.routes.ts";
 import getDonations from "../routes/getActiveDonations.routes.ts";
 import acceptDonation from "../routes/acceptDonation.routes.ts";
 import cors from "cors";
-
+import dotenv from "dotenv";
+dotenv.config();
 const app = express();
 app.use(express.json());
 
-// Enable CORS for all routes
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  
-  next();
-});
-
+app.use(cors({
+   origin:"http://localhost:3000",
+   methods:['GET','POST'],
+    credentials:true
+ }))
+//pp.use(morgan('dev'))
 app.use(cookieParser());
 
 const PORT: number = 5000;
 
-// Your routes
 app.use("/", patientRegsitration);
 app.use("/", donorRegistration);
 app.use("/", bloodBank);
@@ -43,5 +34,5 @@ app.use("/", getDonations);
 app.use("/donations", acceptDonation);
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`listening on port ${PORT}`);
 });

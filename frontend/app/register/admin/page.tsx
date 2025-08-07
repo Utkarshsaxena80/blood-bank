@@ -72,7 +72,7 @@ axios.post("http://localhost:5000/register-bloodBank",
 
       .then(res => {
         setSuccess("Registration successful!");
-        setTimeout(() => router.push("/"), 1500);
+        setTimeout(() => router.push("/dashboard/admin"), 1500);
       })
       .catch(err => {
         setError(err.response?.data?.message || "Registration failed");
