@@ -19,7 +19,7 @@ export default function BloodCompatibilityPage() {
           🩸 Blood Type Compatibility
         </h1>
         <p className="text-center text-gray-300 mb-10">
-          Know which blood types are compatible for donation. This helps save lives by ensuring the right match!
+          Know which blood types are compatible for donation. This helps to save lives by ensuring the right match!
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
