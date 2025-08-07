@@ -83,7 +83,7 @@ setPatients(patientsData);
       .post(
         "http://localhost:5000/donate",
         {
-          patientId: patient.id,
+          patientId:String( patient.id),
           urgencyLevel: "high",
           requiredUnits: 2,
           notes: "Needs quickly",

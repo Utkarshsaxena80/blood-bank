@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { CheckCircle, XCircle, Clock, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
+import axios from 'axios'
+import { ToastContainer, toast } from 'react-toastify';
 
 interface DonationRequest {
   id: string;
@@ -27,6 +29,9 @@ export default function DonationRequestsTable() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const notify=()=>{
+    toast('donation accepted!');
+  }
 
   useEffect(() => {
     const fetchDonations = async () => {
@@ -36,6 +41,7 @@ export default function DonationRequestsTable() {
         });
 
         const body = await res.json();
+        console.log(body)
         if (!res.ok) throw new Error(body.error || "Failed to fetch donation requests");
 
         setDonations(body.data || []);
@@ -77,8 +83,41 @@ export default function DonationRequestsTable() {
   };
 
   const handleApprove = (id: string) => {
-    console.log("Approve", id);
-    // You can call API to approve here
+    try{
+
+    
+    axios.post('http://localhost:5000/donations/accept',{
+      donationRequestId:id,
+      numberOfUnits:2,
+      notes:"Approved Quickly",
+      expiryDays:30
+    },{
+      withCredentials:true,
+    })
+    .then(response => {
+  //taoster that request has been accepted 
+     {notify}
+     <ToastContainer />
+
+       const certificateUrl=response.data?.data?.certificateUrl
+       if(certificateUrl){
+        const link=document.createElement('a');
+        link.href=certificateUrl
+
+        link.setAttribute('download','donation-certificate.pdf')
+        document.body.appendChild(link)
+
+        link.click()
+        document.body.removeChild(link)
+       }
+
+      console.log("Donation approved:", response.data);
+
+      // optionally trigger a toast or state update here
+    })
+  }catch(err){
+    console.log(err);
+  }
   };
 
   const handleReject = (id: string) => {

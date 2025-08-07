@@ -13,8 +13,10 @@ import {
   Edit,
   Trash2,
 } from "lucide-react";
-
+import axios from 'axios'
 import DonationRequestsTable from "@/components/admin/DonationRequestsTable";
+import ApprovedRequestsTable from "@/components/admin/BloodRequestTable";
+
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -51,7 +53,6 @@ export default function AdminDashboard() {
     { id: "requests", label: "Blood Requests" },
     { id: "donation-requests", label: "Donation Requests" },
   ];
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -149,6 +150,51 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
+
+     {activeTab === "requests" && (
+  <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    {/* Card Header */}
+    <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            Blood Requests
+          </h3>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Manage all incoming blood requests from patients and hospitals.
+          </p>
+        </div>
+        
+        {/* Search and Filter Controls */}
+        <div className="flex space-x-3">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search requests..."
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white dark:bg-gray-700 dark:border-gray-600 placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            />
+          </div>
+          <select className="block w-40 pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md dark:bg-gray-700 dark:border-gray-600">
+            <option>All Status</option>
+            <option>Pending</option>
+            <option>Fulfilled</option>
+            <option>In Progress</option>
+            <option>Cancelled</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    {/* Card Body containing the data table */}
+    <div className="px-6 py-4">
+      <ApprovedRequestsTable />
+    </div>
+  </div>
+)}
+
 
         {/* Other Tabs */}
         {activeTab === "overview" && (
